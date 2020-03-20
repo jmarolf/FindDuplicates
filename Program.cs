@@ -74,9 +74,12 @@ namespace FindDuplicates
             }
             WriteLine();
             var output = dictionary.Select(kvp => new KeyValuePair<string, string[]>(kvp.Key, kvp.Value.Select(x => x.FullName).ToArray())).ToDictionary(x => x.Key, x => x.Value);
-            var jsonstring = JsonConvert.SerializeObject(output);
-            using var jsonFile = File.CreateText(GetFileName());
+            var jsonstring = JsonConvert.SerializeObject(output, new JsonSerializerSettings { Formatting = Formatting.Indented});
+            string fileNamePath = GetFileName();
+            using var jsonFile = File.CreateText(fileNamePath);
             jsonFile.Write(jsonstring);
+            WriteLine($"wrote out complete list of duplicate files to '{Path.GetFullPath(fileNamePath)}'");
+            WriteLine();
         }
 
         private static string GetFileName()
