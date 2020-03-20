@@ -86,7 +86,7 @@ namespace FindDuplicates
         {
             var fileName = "duplicateFiles";
             var finalFileName = fileName;
-            int appendNum = 0;
+            int appendNum = 1;
             while (File.Exists(finalFileName + ".json"))
             {
                 finalFileName = fileName + appendNum;
