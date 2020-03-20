@@ -5,6 +5,8 @@ using System.Linq;
 
 using Microsoft.Build.Locator;
 
+using Newtonsoft.Json;
+
 using static System.Console;
 using static System.Math;
 
@@ -17,8 +19,7 @@ namespace FindDuplicates
             var visualStudioInstances = MSBuildLocator.QueryVisualStudioInstances().ToList();
             for (int i = 0; i < visualStudioInstances.Count; i++)
             {
-                var rootPath = visualStudioInstances[i].VisualStudioRootPath;
-                PrintDuplicateFiles(rootPath);
+                PrintDuplicateFiles(visualStudioInstances[i].VisualStudioRootPath);
             }
         }
 
@@ -72,7 +73,24 @@ namespace FindDuplicates
                 WriteLine($"    {file.FullName}");
             }
             WriteLine();
-            _ = ReadLine();
+            var output = dictionary.Select(kvp => new KeyValuePair<string, string[]>(kvp.Key, kvp.Value.Select(x => x.FullName).ToArray())).ToDictionary(x => x.Key, x => x.Value);
+            var jsonstring = JsonConvert.SerializeObject(output);
+            using var jsonFile = File.CreateText(GetFileName());
+            jsonFile.Write(jsonstring);
+        }
+
+        private static string GetFileName()
+        {
+            var fileName = "duplicateFiles";
+            var finalFileName = fileName;
+            int appendNum = 0;
+            while (File.Exists(finalFileName + ".json"))
+            {
+                finalFileName = fileName + appendNum;
+                appendNum++;
+            }
+
+            return finalFileName + ".json";
         }
 
         private static Dictionary<string, List<FileInfo>> EnumerateFiles(string folderPath)
