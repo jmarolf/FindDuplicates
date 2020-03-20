@@ -26,7 +26,7 @@ namespace FindDuplicates
         public static long TotalWaste(this List<FileInfo> files)
         {
             var bytes = 0L;
-            foreach (var file in files)
+            foreach (var file in files.Skip(1))
             {
                 bytes += file.Length;
             }
