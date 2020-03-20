@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FindDuplicates
 {
@@ -23,6 +21,22 @@ namespace FindDuplicates
             }
 
             return $"{bytes} bytes";
+        }
+
+        public static long TotalWaste(this List<FileInfo> files)
+        {
+            var bytes = 0L;
+            foreach (var file in files)
+            {
+                bytes += file.Length;
+            }
+
+            return bytes;
+        }
+
+        public static bool AreAllSameSize(this List<FileInfo> files)
+        {
+            return files.Select(x => x.Length).Distinct().Count() < 2;
         }
     }
 }
